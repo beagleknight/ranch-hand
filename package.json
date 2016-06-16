@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/LateRoomsGroup/ranch-hand/issues"
   },
-  "homepage": "https://github.com/LateRoomsGroup/ranch-hand#readme"
+  "homepage": "https://github.com/LateRoomsGroup/ranch-hand#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-mocha-test": "^0.12.7",
+    "mocha": "^2.5.3",
+    "should": "^9.0.2"
+  }
 }
