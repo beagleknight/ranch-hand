@@ -4,6 +4,9 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         jshint: {
+            options: {
+                esversion: 6
+            },
             all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js']
         },
         mochaTest: {
