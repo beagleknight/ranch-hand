@@ -1,7 +1,7 @@
-module.exports = function createMasterScheduler(){
+module.exports = function createMasterScheduler(rancher, config){
     return {
         start: function() {
-            return 'hello world';
+            return rancher.makeRequest(config.label);
         }
     };
 };
