@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/LateRoomsGroup/ranch-hand#readme",
   "devDependencies": {
+    "eslint": "^2.12.0",
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
+    "grunt-eslint": "^18.0.0",
     "grunt-mocha-test": "^0.12.7",
     "load-grunt-tasks": "^3.5.0",
     "mocha": "^2.5.3",

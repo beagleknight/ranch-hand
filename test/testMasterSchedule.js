@@ -23,6 +23,7 @@ function getBody(req) {
 
 describe('Scheduling Rancher Checks', function() {
     describe('Getting all containers to schedule', function () {
+        beforeEach(() => {})
         it('should send a request to rancher', function (done) {
             fakeRancher.start(function (req) {
                 getBody(req)
