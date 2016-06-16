@@ -6,7 +6,8 @@ var fakeRancher = require('./fakes/rancherServer')();
 const defaultConfig = {
     host:'localhost',
     port:1234,
-    label:'something'
+    label:'something',
+    interval: 100
 };
 
 function getBody(req) {
@@ -33,6 +34,16 @@ describe('Scheduling Rancher Checks', function() {
             const rancherInterface = createRancherInterface(defaultConfig);
             const scheduler = masterSchedule(rancherInterface, defaultConfig);
             scheduler.start();
+        });
+
+        it('should poll at least 10 times at 100ms interval', () => {
+            const rancherInterface = createRancherInterface(defaultConfig);
+            const scheduler = masterSchedule(rancherInterface, defaultConfig);
+            var numberOfRequests = 0;
+            fakeRancher.start(req => numberOfRequests++);
+
+            return new Promise(resolve => setTimeout(() => resolve(numberOfRequests)), 1000)
+                .should.eventually.equal(10);
         });
 
         afterEach(function(){
