@@ -7,17 +7,21 @@ const fakeRancher = require('./fakes/rancherServer')();
 const defaultConfig = {
     host:'localhost',
     port:1234,
-    label:'something',
-    interval: 100
+    interval: 100,
+    basePath: '/v1/projects/1a16',
+    label: {
+        restart: 'cron-schedule',
+        path: '/labels'
+    }
 };
 
 function getBody(req) {
     return new Promise((resolve, reject) => {
-        body(req, (err, body) => {
+        body(req, (err, bodyData) => {
             if(err) {
                 return reject(err);
             }
-            return resolve(body);
+            return resolve(bodyData);
         });
     });
 }
@@ -30,29 +34,22 @@ describe('Scheduling Rancher Checks', () => {
             scheduler = createMasterScheduler(rancherInterface, defaultConfig);
         });
 
-        it('should send a request to rancher', (done) => {
-            fakeRancher.start((req) => {
-                getBody(req)
-                    .then((body) => {
-                        body.should.equal('something');
-                        done();
-                    });
+        it('should ask for all containers with specific label', () => {
+            let urlsRequested = []
+            fakeRancher.start((req, res) => {
+                res.write(JSON.stringify(require('./data/label-response.json')));
+                urlsRequested.push(req.path);
             });
-            scheduler.start();
-        });
-
-        it('should poll 5 times in 500ms at 100ms interval', () => {
-            let numberOfRequests = 0;
-            fakeRancher.start(() => numberOfRequests++);
-            scheduler.start();
-
-            return new Promise(resolve => setTimeout(() => resolve(numberOfRequests), 500))
-                .should.eventually.equal(5);
+            return scheduler.start()
+                .then(() => {
+                    return urlsRequested;
+                })
+                .should.eventually.deepEqual([defaultConfig.label.path, '/v1/projects/1a16/labels/12345/instances'])
         });
 
         afterEach(() => {
-            fakeRancher.stop();
-            scheduler.stop();
+            scheduler.stop()
+                .then(() => fakeRancher.stop());
         });
     });
 });

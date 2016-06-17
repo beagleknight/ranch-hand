@@ -6,7 +6,7 @@ module.exports = function createFakeRancher(){
     return {
         start: function(handle, callback) {
             server = http.createServer(handle);
-            server.listen(1234, callback);
+            return new Promise((resolve) => server.listen(1234, resolve));
         },
         stop: function(callback) {
             server.close(callback);
