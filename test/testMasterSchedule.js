@@ -41,17 +41,18 @@ describe('Scheduling Rancher Checks', () => {
             scheduler.start();
         });
 
-        it('should poll at least 10 times at 100ms interval', () => {
+        it('should poll 5 times in 500ms at 100ms interval', () => {
             let numberOfRequests = 0;
             fakeRancher.start(() => numberOfRequests++);
             scheduler.start();
 
-            return new Promise(resolve => setTimeout(() => resolve(numberOfRequests), 1000))
-                .should.eventually.equal(10);
+            return new Promise(resolve => setTimeout(() => resolve(numberOfRequests), 500))
+                .should.eventually.equal(5);
         });
 
         afterEach(() => {
             fakeRancher.stop();
+            scheduler.stop();
         });
     });
 });
