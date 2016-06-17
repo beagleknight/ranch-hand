@@ -12,7 +12,10 @@ module.exports = function(grunt) {
             }
         },
         eslint: {
-            target: ['src/**/*.js', 'test/**/*.js']
+            options: {
+                configFile: '.eslintrc'
+            },
+            target: ['src/**/*.js']
         }
     });
 

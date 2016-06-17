@@ -1,9 +1,10 @@
-var request = require('request');
+'use strict'
+const request = require('request');
 module.exports = function createRancherInterface(config) {
     return {
         makeRequest: function(label) {
             request.get({
-                url: 'http://' + config.host + ':' + config.port,
+                url: `http://${config.host}:${config.port}`,
                 body:label
             });
         }

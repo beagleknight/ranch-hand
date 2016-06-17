@@ -1,8 +1,9 @@
-var should = require('should');
+'use strict'
+require('should');
 const body = require('body');
-var masterSchedule = require('../src/masterSchedule');
-var createRancherInterface = require('../src/rancher');
-var fakeRancher = require('./fakes/rancherServer')();
+const createMasterScheduler = require('../src/masterSchedule');
+const createRancherInterface = require('../src/rancher');
+const fakeRancher = require('./fakes/rancherServer')();
 const defaultConfig = {
     host:'localhost',
     port:1234,
@@ -11,8 +12,8 @@ const defaultConfig = {
 };
 
 function getBody(req) {
-    return new Promise(function (resolve, reject) {
-        body(req, function(err, body) {
+    return new Promise((resolve, reject) => {
+        body(req, (err, body) => {
             if(err) {
                 return reject(err);
             }
@@ -21,33 +22,35 @@ function getBody(req) {
     });
 }
 
-describe('Scheduling Rancher Checks', function() {
-    describe('Getting all containers to schedule', function () {
-        beforeEach(() => {})
-        it('should send a request to rancher', function (done) {
-            fakeRancher.start(function (req) {
+describe('Scheduling Rancher Checks', () => {
+    describe('Getting all containers to schedule', () => {
+        let scheduler;
+        beforeEach(() => {
+            const rancherInterface = createRancherInterface(defaultConfig);
+            scheduler = createMasterScheduler(rancherInterface, defaultConfig);
+        });
+
+        it('should send a request to rancher', (done) => {
+            fakeRancher.start((req) => {
                 getBody(req)
-                    .then(function(body) {
+                    .then((body) => {
                         body.should.equal('something');
                         done();
                     });
             });
-            const rancherInterface = createRancherInterface(defaultConfig);
-            const scheduler = masterSchedule(rancherInterface, defaultConfig);
             scheduler.start();
         });
 
         it('should poll at least 10 times at 100ms interval', () => {
-            const rancherInterface = createRancherInterface(defaultConfig);
-            const scheduler = masterSchedule(rancherInterface, defaultConfig);
-            var numberOfRequests = 0;
-            fakeRancher.start(req => numberOfRequests++);
+            let numberOfRequests = 0;
+            fakeRancher.start(() => numberOfRequests++);
+            scheduler.start();
 
-            return new Promise(resolve => setTimeout(() => resolve(numberOfRequests)), 1000)
+            return new Promise(resolve => setTimeout(() => resolve(numberOfRequests), 1000))
                 .should.eventually.equal(10);
         });
 
-        afterEach(function(){
+        afterEach(() => {
             fakeRancher.stop();
         });
     });

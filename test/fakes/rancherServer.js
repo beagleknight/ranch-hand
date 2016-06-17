@@ -1,7 +1,8 @@
-var http = require("http");
+'use strict'
+const http = require("http");
 
 module.exports = function createFakeRancher(){
-    var server = {};
+    let server = {};
     return {
         start: function(handle, callback) {
             server = http.createServer(handle);
