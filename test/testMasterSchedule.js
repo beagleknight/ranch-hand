@@ -11,17 +11,6 @@ const defaultConfig = {
     interval: 100
 };
 
-function getBody(req) {
-    return new Promise((resolve, reject) => {
-        body(req, (err, bodyData) => {
-            if(err) {
-                return reject(err);
-            }
-            return resolve(bodyData);
-        });
-    });
-}
-
 describe('Scheduling Rancher Checks', () => {
     describe('Given I have a task scheduled right now', () => {
         let poller;
