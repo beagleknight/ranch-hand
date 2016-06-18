@@ -3,6 +3,7 @@ require('should');
 const body = require('body');
 const createPoller = require('../src/poller');
 const createRancherInterface = require('../src/rancher');
+const createTaskExecutor = require('../src/taskExecutor');
 const fakeRancher = require('./fakes/rancherServer')();
 const defaultConfig = {
     host:'localhost',
@@ -26,7 +27,8 @@ describe('Scheduling Rancher Checks', () => {
         let poller;
         beforeEach(() => {
             const rancherInterface = createRancherInterface(defaultConfig);
-            poller = createPoller(rancherInterface, defaultConfig);
+            const taskExecutor = createTaskExecutor(rancherInterface);
+            poller = createPoller(taskExecutor, defaultConfig);
         });
         describe('When executing tasks', () => {
             it('Then a request should go to rancher', () => {

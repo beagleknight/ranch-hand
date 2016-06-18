@@ -1,11 +1,11 @@
 'use strict'
-module.exports = function createPoller(rancher, config){
+module.exports = function createPoller(executor, config){
     let polling = true;
     let timeout;
     const poll = () => {
         if(!polling) return;
-        return rancher.makeRequest('/v1/projects/1a16/containers/1i4127/?action=start')
-            .then(() => timeout = setTimeout(poll, config.interval));
+        executor.registerTask('/v1/projects/1a16/containers/1i4127/?action=start')
+        timeout = setTimeout(poll, config.interval);
     };
 
     return {
