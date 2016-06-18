@@ -4,7 +4,7 @@ const http = require("http");
 module.exports = function createFakeRancher(){
     let server = {};
     return {
-        start: function(handle, callback) {
+        start: function(handle) {
             server = http.createServer(handle);
             return new Promise((resolve) => server.listen(1234, resolve));
         },

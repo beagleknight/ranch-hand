@@ -7,12 +7,7 @@ const fakeRancher = require('./fakes/rancherServer')();
 const defaultConfig = {
     host:'localhost',
     port:1234,
-    interval: 100,
-    basePath: '/v1/projects/1a16',
-    label: {
-        restart: 'cron-schedule',
-        path: '/labels'
-    }
+    interval: 100
 };
 
 function getBody(req) {
@@ -27,29 +22,27 @@ function getBody(req) {
 }
 
 describe('Scheduling Rancher Checks', () => {
-    describe('Getting all containers to schedule', () => {
+    describe('Given I have a task scheduled right now', () => {
         let scheduler;
         beforeEach(() => {
             const rancherInterface = createRancherInterface(defaultConfig);
             scheduler = createMasterScheduler(rancherInterface, defaultConfig);
         });
-
-        it('should ask for all containers with specific label', () => {
-            let urlsRequested = []
-            fakeRancher.start((req, res) => {
-                res.write(JSON.stringify(require('./data/label-response.json')));
-                urlsRequested.push(req.path);
-            });
-            return scheduler.start()
-                .then(() => {
-                    return urlsRequested;
-                })
-                .should.eventually.deepEqual([defaultConfig.label.path, '/v1/projects/1a16/labels/12345/instances'])
+        describe('When executing tasks', () => {
+            it('Then a request should go to rancher', () => {
+                const urlsRequested = [];
+                fakeRancher.start((req, res) => {
+                    urlsRequested.push(req.url);
+                });
+                scheduler.start();
+                return new Promise(resolve => setTimeout(() => resolve(urlsRequested), 20))
+                    .should.eventually.deepEqual(['/v1/projects/1a16/containers/1i4127/?action=start']);
+            })
         });
 
         afterEach(() => {
-            scheduler.stop()
-                .then(() => fakeRancher.stop());
+            scheduler.stop();
+            fakeRancher.stop();
         });
     });
 });
