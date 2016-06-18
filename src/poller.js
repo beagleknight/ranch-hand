@@ -1,5 +1,5 @@
 'use strict'
-module.exports = function createMasterScheduler(rancher, config){
+module.exports = function createPoller(rancher, config){
     let polling = true;
     let timeout;
     const poll = () => {

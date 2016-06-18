@@ -1,7 +1,7 @@
 'use strict'
 require('should');
 const body = require('body');
-const createMasterScheduler = require('../src/masterSchedule');
+const createPoller = require('../src/poller');
 const createRancherInterface = require('../src/rancher');
 const fakeRancher = require('./fakes/rancherServer')();
 const defaultConfig = {
@@ -23,10 +23,10 @@ function getBody(req) {
 
 describe('Scheduling Rancher Checks', () => {
     describe('Given I have a task scheduled right now', () => {
-        let scheduler;
+        let poller;
         beforeEach(() => {
             const rancherInterface = createRancherInterface(defaultConfig);
-            scheduler = createMasterScheduler(rancherInterface, defaultConfig);
+            poller = createPoller(rancherInterface, defaultConfig);
         });
         describe('When executing tasks', () => {
             it('Then a request should go to rancher', () => {
@@ -34,14 +34,14 @@ describe('Scheduling Rancher Checks', () => {
                 fakeRancher.start((req, res) => {
                     urlsRequested.push(req.url);
                 });
-                scheduler.start();
+                poller.start();
                 return new Promise(resolve => setTimeout(() => resolve(urlsRequested), 20))
                     .should.eventually.deepEqual(['/v1/projects/1a16/containers/1i4127/?action=start']);
             })
         });
 
         afterEach(() => {
-            scheduler.stop();
+            poller.stop();
             fakeRancher.stop();
         });
     });
