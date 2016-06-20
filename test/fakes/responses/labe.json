@@ -1,0 +1,10 @@
+{
+    "data": [{
+        "links": {
+            "self" :"/v1/projects/1a16/containers/1i4174"
+        },
+        "labels": {
+            "cron_schedule": "* * * * * *"
+        }
+    }]
+}

@@ -3,8 +3,9 @@ module.exports = function createRancherCheckScheduler(scheduler, rancherInterfac
     const checkRancher = () => {
         rancherInterface.makeRequest(config.labels.path)
             .then(containers => {
-                JSON.parse(containers).forEach(() => {
-                    scheduler.scheduleJob('', () => {})
+                JSON.parse(containers).data.forEach(container => {
+                    scheduler.scheduleJob(container.labels.cron_schedule,
+                        () => rancherInterface.makeRequest(`${container.links.self}/?action=start`));
                 });
             })
             .catch(err => {
@@ -14,6 +15,7 @@ module.exports = function createRancherCheckScheduler(scheduler, rancherInterfac
     return {
         start: function() {
             scheduler.scheduleJob(config.updateCron, checkRancher);
+            return new Promise(resolve => resolve());
         }
     };
 };
