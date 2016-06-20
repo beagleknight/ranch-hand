@@ -22,7 +22,7 @@ describe('Scheduling Rancher Checks', () => {
     describe('Given a rancher check will run immediately', () => {
         let scheduleJobRan = () => {};
         const config = {
-            host: 'localhost',
+            host: 'http://localhost',
             port: 1234,
             labels: {
                 path:'/a/rancher/resource'
@@ -47,15 +47,18 @@ describe('Scheduling Rancher Checks', () => {
             });
         });
         describe('And there are some containers with a cron spec label', () => {
+            let labelResponse = [];
             beforeEach(() => {
-                const labelResponse = ['container1', 'container2', 'container3']
+                labelResponse = [];
                 fakeRancher.start((req, res) => {
-                    res.write(JSON.stringify(labelResponse));
+                    const responseToSend = () => labelResponse;
+                    res.write(JSON.stringify(responseToSend()));
                     res.end();
                 });
             });
             describe('When I ask rancher for the containers to schedule', () => {
                 it('should have a job scheduled for each container', () => {
+                    labelResponse = ['container1', 'container2', 'container3'];
                     let jobsScheduled = 0;
                     scheduleJobRan = () => {
                         jobsScheduled++;

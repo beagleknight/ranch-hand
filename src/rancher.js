@@ -4,7 +4,7 @@ module.exports = function createRancherInterface(config) {
     return {
         makeRequest: function(path) {
             return new Promise((resolve, reject) => {
-                const url = `http://${config.host}:${config.port}${path}`;
+                const url = `${config.host}:${config.port}${path}`;
                 request.get({
                     url: url
                 }, (err, res, body) => {
