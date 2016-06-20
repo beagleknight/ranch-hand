@@ -2,7 +2,7 @@
 const http = require("http");
 
 module.exports = function createFakeRancher(){
-    let server = {};
+    let server = {close:() => {}};
     return {
         start: function(handle) {
             server = http.createServer(handle);

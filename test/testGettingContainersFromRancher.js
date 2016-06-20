@@ -4,6 +4,11 @@ const createRancherCheckScheduler = require('../src/rancherCheckScheduler');
 const createRancherInterface = require('../src/rancher')
 const fakeRancher = require('./fakes/rancherServer')();
 
+const waitToEqual = (data, time, expected) => {
+    return new Promise(resolve => setTimeout(() => resolve(data()), time))
+        .should.eventually.equal(expected);
+}
+
 describe('Scheduling Rancher Checks', () => {
     describe('When the application starts', () => {
         it('should schedule a job to run at the configured frequency', () => {
@@ -36,18 +41,17 @@ describe('Scheduling Rancher Checks', () => {
                 rancherCheckScheduler.start();
                 let urlRequested;
                 fakeRancher.start((req) => urlRequested = req.url);
-                return new Promise(resolve => setTimeout(() => resolve(urlRequested), 20))
-                    .should.eventually.equal('/a/rancher/resource')
+                return waitToEqual(() => urlRequested, 20, '/a/rancher/resource');
             });
         });
         describe('And there are some containers with a cron spec label', () => {
-            const labelResponse = ['container1', 'container2', 'container3']
-            fakeRancher.start((req, res) => {
-                res.write(JSON.stringify(containersWithLabel));
-                res.end();
-            });
             describe('When I ask rancher for the containers to schedule', () => {
-                it('there should be a job scheduled for the label check and each container', () => {
+                it('should have a job scheduled for the label check and each container', () => {
+                    const labelResponse = ['container1', 'container2', 'container3']
+                    fakeRancher.start((req, res) => {
+                        res.write(JSON.stringify(labelResponse));
+                        res.end();
+                    });
                     let jobsScheduled = 0;
                     scheduleJobRan = () => {
                         jobsScheduled++;
@@ -55,8 +59,7 @@ describe('Scheduling Rancher Checks', () => {
                     const rancherInterface = createRancherInterface(config);
                     const rancherCheckScheduler = createRancherCheckScheduler(cronScheduler, rancherInterface, config);
                     rancherCheckScheduler.start();
-                    return new Promise(resolve => setTimeout(() => resolve(jobsScheduled), 50))
-                        .should.eventually.equal(4);
+                    return waitToEqual(() => jobsScheduled, 20, 4)
                 });
             });
         });
