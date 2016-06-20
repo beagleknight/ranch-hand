@@ -1,5 +1,6 @@
 'use strict'
 require('should');
+const proxyquire =  require('proxyquire');
 const config = {
     "host":"http://localhost",
     "port":1234,
@@ -8,22 +9,27 @@ const config = {
         path:"/label"
     }
 }
-const fakeRancher = require('./fakes/bigFakeRancher')();
-const server = require('../src/index')(config);
+const fakeRancher = require('./fakes/rancherServer')();
 
 const waitToEqual = (data, time, expected) => {
     return new Promise(resolve => setTimeout(() => resolve(data()), time))
         .should.eventually.deepEqual(expected);
 }
 
-describe('Big test', () => {
-    it('should start a container', function () {
-        this.timeout(0);
-        return fakeRancher.start()
-            .then(() => server.start())
-            .then(() => waitToEqual(() => fakeRancher.urls()[0], 3000, '/v1/projects/1a16/containers/1i4174/?action=start'))
-    });
-    afterEach(() => {
-        fakeRancher.stop();
+describe('Given all scheduled jobs happen immediately', () => {
+    const server = proxyquire('../src/index', {
+        'node-schedule': {
+            scheduleJob: (spec, job) => job()
+        }
+    })(config);
+    describe('when starting some containers', () => {
+        it('should ask rancher to start a container', () => {
+            return fakeRancher.start()
+                .then(() => server.start())
+                .then(() => waitToEqual(() => fakeRancher.urls()[0], 30, '/v1/projects/1a16/containers/1i4174/?action=start'))
+        });
+        afterEach(() => {
+            fakeRancher.stop();
+        })
     })
 });
