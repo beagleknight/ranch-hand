@@ -34,32 +34,33 @@ describe('Scheduling Rancher Checks', () => {
                 scheduleJobRan();
             }
         }
+        beforeEach(() => {
+            const rancherInterface = createRancherInterface(config);
+            const rancherCheckScheduler = createRancherCheckScheduler(cronScheduler, rancherInterface, config);
+            rancherCheckScheduler.start();
+        })
         describe('When the application starts', () => {
             it('should ask rancher for a label', () => {
-                const rancherInterface = createRancherInterface(config);
-                const rancherCheckScheduler = createRancherCheckScheduler(cronScheduler, rancherInterface, config);
-                rancherCheckScheduler.start();
                 let urlRequested;
                 fakeRancher.start((req) => urlRequested = req.url);
                 return waitToEqual(() => urlRequested, 20, '/a/rancher/resource');
             });
         });
         describe('And there are some containers with a cron spec label', () => {
+            beforeEach(() => {
+                const labelResponse = ['container1', 'container2', 'container3']
+                fakeRancher.start((req, res) => {
+                    res.write(JSON.stringify(labelResponse));
+                    res.end();
+                });
+            });
             describe('When I ask rancher for the containers to schedule', () => {
-                it('should have a job scheduled for the label check and each container', () => {
-                    const labelResponse = ['container1', 'container2', 'container3']
-                    fakeRancher.start((req, res) => {
-                        res.write(JSON.stringify(labelResponse));
-                        res.end();
-                    });
+                it('should have a job scheduled for each container', () => {
                     let jobsScheduled = 0;
                     scheduleJobRan = () => {
                         jobsScheduled++;
                     }
-                    const rancherInterface = createRancherInterface(config);
-                    const rancherCheckScheduler = createRancherCheckScheduler(cronScheduler, rancherInterface, config);
-                    rancherCheckScheduler.start();
-                    return waitToEqual(() => jobsScheduled, 20, 4)
+                    return waitToEqual(() => jobsScheduled, 20, 3)
                 });
             });
         });
