@@ -14,7 +14,7 @@ describe('Scheduling Rancher Checks', () => {
             rancherCheckScheduler.start();
         });
     });
-    describe('Given my check will run immediately', () => {
+    describe('Given a rancher check will run immediately', () => {
         const cronScheduler = {
             scheduleJob: (spec, job) => {
                 job();
