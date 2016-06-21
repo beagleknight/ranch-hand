@@ -1,5 +1,5 @@
-'use strict'
 const request = require('request');
+
 module.exports = function createRancherInterface(config) {
     return {
         makeRequest: function(path) {

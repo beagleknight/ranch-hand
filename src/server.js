@@ -4,7 +4,6 @@ const createRancherInterface = require('./rancher');
 
 module.exports = (config) => {
     config = config || require('./config')();
-    console.log(config);
     const rancherInterface = createRancherInterface(config);
     const rancherCheckScheduler = createRancherCheckScheduler(scheduler, rancherInterface, config);
     return {
