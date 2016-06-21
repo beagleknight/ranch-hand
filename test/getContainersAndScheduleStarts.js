@@ -17,7 +17,7 @@ const waitToEqual = (data, time, expected) => {
 }
 
 describe('Given all scheduled jobs happen immediately', () => {
-    const server = proxyquire('../src/index', {
+    const server = proxyquire('../src/server', {
         'node-schedule': {
             scheduleJob: (spec, job) => job()
         }
