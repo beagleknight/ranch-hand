@@ -15,7 +15,10 @@ module.exports = function createFakeRancher(){
         start: function() {
             urls = [];
             server = http.createServer(handleRequest);
-            return new Promise((resolve) => server.listen(1234, resolve));
+            return new Promise((resolve) => server.listen(1234, () => {
+                console.log('stood up server');
+                resolve();
+            }));
         },
         stop: function(callback) {
             server.close(callback);
