@@ -1,5 +1,5 @@
 'use strict'
-const http = require("http");
+const http = require('http');
 
 module.exports = function createFakeRancher(){
     let urls = [];

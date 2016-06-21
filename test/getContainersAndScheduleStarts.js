@@ -2,12 +2,13 @@
 require('should');
 const proxyquire =  require('proxyquire');
 const config = {
-    "host":"http://localhost",
+    "host":"localhost",
     "port":1234,
     "updateCron": "* * * * * *",
     "labels":{
         path:"/label"
-    }
+    },
+    "useSecure": false
 }
 const fakeRancher = require('./fakes/rancherServer')();
 
@@ -17,10 +18,13 @@ const waitToEqual = (data, time, expected) => {
 }
 
 describe('Given all scheduled jobs happen immediately', () => {
-    const server = proxyquire('../src/server', {
+    const scheduler = proxyquire('../src/rancherCheckScheduler', {
         'node-schedule': {
             scheduleJob: (spec, job) => job()
         }
+    });
+    const server = proxyquire('../src/server', {
+        './rancherCheckScheduler': scheduler
     })(config);
     describe('when starting some containers', () => {
         it('should ask rancher to start a container', () => {
