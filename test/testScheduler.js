@@ -10,7 +10,7 @@ let createScheduler = () => proxyquire('../src/scheduler', {
 
 describe('Scheduling Checks', () => {
     describe('scheduling a check', () => {
-        it('should ask to schedule a job', () => {
+        it('should schedule a check', () => {
             let scheduledAJob = false;
             scheduleFunction = () => {
                 scheduledAJob = true;
@@ -18,6 +18,22 @@ describe('Scheduling Checks', () => {
             let scheduler = createScheduler();
             scheduler.scheduleRancherCall();
             scheduledAJob.should.equal(true);
-        })
+        });
+    });
+    describe('Given I have already scheduled a rancher call to start ContainerX', () => {
+        let scheduledJobs = 0;
+        scheduleFunction = () => {
+            scheduledJobs++;
+        };
+        let scheduler = createScheduler();
+        beforeEach(() => {
+            scheduler.scheduleRancherCall();
+        });
+        describe('When I try to schedule another rancher call to start ContainerX', () =>{
+            it('Then only one rancher call should be scheduled', () => {
+                scheduler.scheduleRancherCall();
+                scheduledJobs.should.equal(1);
+            });
+        });
     })
 });
