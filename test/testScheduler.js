@@ -21,18 +21,25 @@ describe('Scheduling Checks', () => {
         });
     });
     describe('Given I have already scheduled a rancher call to start ContainerX', () => {
-        let scheduledJobs = 0;
-        scheduleFunction = () => {
-            scheduledJobs++;
-        };
-        let scheduler = createScheduler();
+        let scheduler, scheduledJobs;
         beforeEach(() => {
-            scheduler.scheduleRancherCall();
+            scheduleFunction = () => {
+                scheduledJobs++;
+            };
+            scheduledJobs = 0;
+            scheduler = createScheduler();
+            scheduler.scheduleRancherCall('cron spec', 'ContainerX');
         });
-        describe('When I try to schedule another rancher call to start ContainerX', () =>{
+        describe('When I try to schedule another rancher call to start ContainerX with the same spec', () =>{
             it('Then only one rancher call should be scheduled', () => {
-                scheduler.scheduleRancherCall();
+                scheduler.scheduleRancherCall('cron spec', 'ContainerX');
                 scheduledJobs.should.equal(1);
+            });
+        });
+        describe('When I try to schedule another rancher call to start ContainerX with a different spec', () =>{
+            it('Then two rancher calls should have been scheduled', () => {
+                scheduler.scheduleRancherCall('cron spec1', 'ContainerX');
+                scheduledJobs.should.equal(2);
             });
         });
     })
