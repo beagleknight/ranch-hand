@@ -21,17 +21,16 @@ describe('Scheduling Checks', () => {
         });
     });
     describe('Given I have already scheduled a rancher call to start ContainerX', () => {
-        let scheduler, scheduledJobs;
-        let cancelFunction = () => {};
-        let getCancelFunction = () => cancelFunction;
+        let scheduler, scheduledJobs, cancelsCalled;
         beforeEach(() => {
             scheduleFunction = () => {
                 scheduledJobs++;
                 return {
-                    cancel: cancelFunction
+                    cancel: () => cancelsCalled++
                 };
             };
             scheduledJobs = 0;
+            cancelsCalled = 0;
             scheduler = createScheduler();
             scheduler.scheduleRancherCall('cron spec', 'ContainerX');
         });
@@ -47,10 +46,6 @@ describe('Scheduling Checks', () => {
                 scheduledJobs.should.equal(2);
             });
             it('And one of them should have been cancelled', () => {
-                const cancelsCalled = 0;
-                cancelFunction = () => {
-                    cancelsCalled++;
-                }
                 scheduler.scheduleRancherCall('cron spec1', 'ContainerX');
                 cancelsCalled.should.equal(1);
             })
@@ -59,9 +54,7 @@ describe('Scheduling Checks', () => {
     describe('Given all scheduled jobs happen immediately', () => {
         let scheduler;
         beforeEach(() => {
-            scheduleFunction = (name, spec, job) => {
-                job();
-            };
+            scheduleFunction = (name, spec, job) => job();
         });
         describe('When a job is successfully scheduled and called', () => {
             it('Then a request out to rancher is made', () => {
