@@ -9,6 +9,7 @@ module.exports = function createFakeRancher(){
             res.write(JSON.stringify(require('./responses/label')));
             return res.end()
         }
+        console.log('got request')
         urls.push(req.url);
     }
     return {

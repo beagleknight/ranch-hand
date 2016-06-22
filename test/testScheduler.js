@@ -1,11 +1,11 @@
 require('should');
 const proxyquire = require('proxyquire');
 let scheduleFunction = () => {};
-let createScheduler = () => proxyquire('../src/scheduler', {
+let createScheduler = (rancher) => proxyquire('../src/scheduler', {
     'node-schedule': {
         scheduleJob: scheduleFunction
     }
-})();
+})(rancher);
 
 
 describe('Scheduling Checks', () => {
@@ -42,5 +42,22 @@ describe('Scheduling Checks', () => {
                 scheduledJobs.should.equal(2);
             });
         });
-    })
+    });
+    describe('Given all scheduled jobs happen immediately', () => {
+        let scheduler;
+        beforeEach(() => {
+            scheduleFunction = (name, spec, job) => {
+                job();
+            };
+        });
+        describe('When a job is successfully scheduled and called', () => {
+            it('Then a request out to rancher is made', () => {
+                const rancher = {
+                    makeRequest: path => path.should.equal('ContainerX')
+                }
+                scheduler = createScheduler(rancher);
+                scheduler.scheduleRancherCall('cron spec1', 'ContainerX');
+            });
+        })
+    });
 });
