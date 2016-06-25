@@ -9,7 +9,7 @@ module.exports = function createRancherCheckScheduler(scheduler, rancherInterfac
                 });
             })
             .catch(err => {
-                logger.logError('err from rancher', err);
+                logger.logError(`err from rancher: ${err.message}`, {stack: err.stack});
             });
         setTimeout(checkRancher, config.checkInterval);
     }
