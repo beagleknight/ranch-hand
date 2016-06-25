@@ -1,4 +1,4 @@
-
+const logger = require('./logging');
 module.exports = function createRancherCheckScheduler(scheduler, rancherInterface, config) {
     const checkRancher = () => {
         rancherInterface.makeRequest(config.labels.path)
@@ -9,7 +9,7 @@ module.exports = function createRancherCheckScheduler(scheduler, rancherInterfac
                 });
             })
             .catch(err => {
-                console.log('err from rancher', err);
+                logger.error('err from rancher', err);
             });
         setTimeout(checkRancher, config.checkInterval);
     }
