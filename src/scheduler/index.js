@@ -4,6 +4,7 @@ const logger = require('../logging')
 module.exports = function(rancher) {
     const scheduledChecks = {};
     const makeRancherCall = path => {
+        logger.logInfo('making rancher request', {path: path})
         rancher.makeRequest(path);
     }
 
