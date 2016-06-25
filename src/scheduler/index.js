@@ -10,7 +10,7 @@ module.exports = function(rancher) {
         scheduledChecks[path] = {};
         scheduledChecks[path].job = nodeSchedule.scheduleJob(path, spec, () => makeRancherCall(path));
         scheduledChecks[path].spec = spec;
-        logger.info('scheduled start', {cron_spec: spec, rancher_path:path});
+        logger.logInfo('scheduled start', {cron_spec: spec, rancher_path:path});
     }
 
     return {
@@ -20,7 +20,7 @@ module.exports = function(rancher) {
             }
             else if(scheduledChecks[path].spec != spec) {
                 scheduledChecks[path].job.cancel();
-                logger.info('cancelled job', {rancher_path:path});
+                logger.logInfo('cancelled job', {rancher_path:path});
                 scheduleAndSave(path, spec);
             }
         }
