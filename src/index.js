@@ -1,3 +1,6 @@
 const server = require('./server')();
-console.log('starting');
+const logger = require('./logging');
+
+logging.logInfo('Started Ranch-Hand')
+
 server.start();

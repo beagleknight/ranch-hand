@@ -1,4 +1,5 @@
 const nodeSchedule = require('node-schedule');
+const logger = require('../logging')
 
 module.exports = function(rancher) {
     const scheduledChecks = {};
