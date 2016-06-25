@@ -1,4 +1,4 @@
-const config = require('./config');
+const config = require('./config')();
 const logging = require('logall');
 logging.registerLogger({
 	level: 'INFO',
@@ -11,5 +11,4 @@ logging.registerLogger({
 		port: config.elasticsearch.port
 	}
 });
-
 module.exports = logging;
