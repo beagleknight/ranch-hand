@@ -1,6 +1,7 @@
 const logger = require('./logging');
 module.exports = function createRancherCheckScheduler(scheduler, rancherInterface, config) {
     const checkRancher = () => {
+        logger.logInfo(`Checking for containers with label set`, {path: config.labels.path})
         rancherInterface.makeRequest(config.labels.path)
             .catch(err => logger.logError(`Error from Rancher`, {stack: err.stack}))
             .then(containers => {
