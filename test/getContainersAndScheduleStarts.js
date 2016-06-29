@@ -5,9 +5,8 @@ const config = {
     "host":"localhost",
     "port":1234,
     "checkInterval": 1000,
-    "labels":{
-        path:"/label"
-    },
+    "containerPath":"/containers",
+    "targetLabel": "cron_spec",
     "useSecure": false
 }
 const fakeRancher = require('./fakes/rancherServer')();
