@@ -1,5 +1,14 @@
 const logger = require('./logging');
 
+const mapContainers = parsed => parsed.data.map(container => {
+    const startLink = `${container.links.self}/?action=start`;
+    return {
+        labels: container.labels,
+        startLink: startLink,
+        name: container.name
+    }
+})
+
 
 module.exports = function createRancherCheckScheduler(scheduler, rancherInterface, config) {
     const getAllContainers = () => {
@@ -9,10 +18,11 @@ module.exports = function createRancherCheckScheduler(scheduler, rancherInterfac
         rancherInterface.makeRequest(containerPath)
             .catch(err => logger.logError(`Error from Rancher`, {stack: err.stack}))
             .then(responseBody => JSON.parse(responseBody))
-            .then(parsed => {
-                parsed.data.forEach(container => {
+            .then(mapContainers)
+            .then(containers => {
+                containers.forEach(container => {
                     if(container.labels && container.labels[targetLabel]) {
-                        scheduler.scheduleRancherCall(container.labels[targetLabel], `${container.links.self}/?action=start`, container.name);
+                        scheduler.scheduleRancherCall(container.labels[targetLabel], container.startLink, container.name);
                     }
                 })
             })
