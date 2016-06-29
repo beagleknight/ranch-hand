@@ -32,21 +32,21 @@ describe('Scheduling Checks', () => {
             scheduledJobs = 0;
             cancelsCalled = 0;
             scheduler = createScheduler();
-            scheduler.scheduleRancherCall('cron spec', 'ContainerX');
+            scheduler.scheduleRancherCall('cron spec', '/path/to/start', 'ContainerX');
         });
         describe('When I try to schedule another rancher call to start ContainerX with the same spec', () =>{
             it('Then only one rancher call should be scheduled', () => {
-                scheduler.scheduleRancherCall('cron spec', 'ContainerX');
+                scheduler.scheduleRancherCall('cron spec', '/path/to/start', 'ContainerX');
                 scheduledJobs.should.equal(1);
             });
         });
         describe('When I try to schedule another rancher call to start ContainerX with a different spec', () =>{
             it('Then two rancher calls should have been scheduled', () => {
-                scheduler.scheduleRancherCall('cron spec1', 'ContainerX');
+                scheduler.scheduleRancherCall('cron spec1', '/path/to/start', 'ContainerX');
                 scheduledJobs.should.equal(2);
             });
             it('And one of them should have been cancelled', () => {
-                scheduler.scheduleRancherCall('cron spec1', 'ContainerX');
+                scheduler.scheduleRancherCall('cron spec1', '/path/to/start', 'ContainerX');
                 cancelsCalled.should.equal(1);
             })
         });

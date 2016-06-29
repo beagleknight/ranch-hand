@@ -18,8 +18,6 @@ module.exports = function(rancher) {
 
     return {
         scheduleRancherCall: (spec, path, name) => {
-            console.log(path)
-            console.log('checks:', scheduledChecks)
             if(!scheduledChecks[name]) {
                 return scheduleAndSave(name, path, spec);
             }
