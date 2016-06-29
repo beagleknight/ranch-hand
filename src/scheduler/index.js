@@ -23,7 +23,7 @@ module.exports = function(rancher) {
             }
             else if(scheduledChecks[name].spec != spec) {
                 scheduledChecks[name].job.cancel();
-                logger.logInfo('cancelled job', {rancher_path:path});
+                logger.logInfo(`cancelled job because ${scheduledChecks[name].spec} did not equal ${spec}`, {rancher_path:path});
                 scheduleAndSave(name, path, spec);
             }
         }
