@@ -12,7 +12,7 @@ module.exports = function createRancherCheckScheduler(scheduler, rancherInterfac
             .then(parsed => {
                 parsed.data.forEach(container => {
                     if(container.labels && container.labels[targetLabel]) {
-                        scheduler.scheduleRancherCall(container.labels[targetLabel], `${container.links.self}/?action=start`);
+                        scheduler.scheduleRancherCall(container.labels[targetLabel], `${container.links.self}/?action=start`, container.name);
                     }
                 })
             })
