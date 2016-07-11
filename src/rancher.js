@@ -13,6 +13,11 @@ module.exports = function createRancherInterface(config) {
             if(err) {
                 reject(err);
             }
+            if(!/2[0-9]{2}/.exec(res.statusCode)) {
+                const err = new Error('Non 200 status code from Rancher');
+                err.status = res.statusCode;
+                reject(err);
+            }
             resolve(body);
         });
     });
