@@ -1,7 +1,7 @@
 const logger = require('./logging');
 
 const mapContainers = parsed => parsed.data.map(container => {
-    const startLink = `${container.links.self}/?action=start`;
+    const startLink = `${container.links.self}/?action=restart`;
     return {
         labels: container.labels,
         startLink: startLink,
