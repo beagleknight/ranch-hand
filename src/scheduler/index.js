@@ -9,7 +9,8 @@ module.exports = function(rancher) {
         rancher.makeRequest(`${path}/?action=stop`)
             .then(() => logger.logInfo('Stopped', {path: path}))
             .then(() => rancher.makeRequest(`${path}/?action=start`))
-            .then(() => logger.logInfo('Started', {path: path}));
+            .then(() => logger.logInfo('Started', {path: path}))
+            .catch(err => logger.logError('Encountered error running scheduled start', {error: err}));
     }
 
     const scheduleAndSave = (name, path, spec) => {
