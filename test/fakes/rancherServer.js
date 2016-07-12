@@ -11,6 +11,7 @@ module.exports = function createFakeRancher() {
         }
         console.log('got request')
         urls.push(req.url);
+        res.end()
     }
     return {
         start: function() {

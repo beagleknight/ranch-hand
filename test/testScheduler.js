@@ -59,7 +59,10 @@ describe('Scheduling Checks', () => {
         describe('When a job is successfully scheduled and called', () => {
             it('Then a request out to rancher is made', () => {
                 const rancher = {
-                    makeRequest: path => path.should.equal('ContainerX')
+                    makeRequest: path => new Promise(resolve => {
+                        path.should.equal('ContainerX/?action=stop');
+                        resolve()
+                    })
                 }
                 scheduler = createScheduler(rancher);
                 scheduler.scheduleRancherCall('cron spec1', 'ContainerX');

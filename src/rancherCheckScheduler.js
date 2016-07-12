@@ -1,10 +1,10 @@
 const logger = require('./logging');
 
 const mapContainers = parsed => parsed.data.map(container => {
-    const startLink = `${container.links.self}/?action=restart`;
+    const link = container.links.self
     return {
         labels: container.labels,
-        startLink: startLink,
+        link: link,
         name: container.name
     }
 })
@@ -22,7 +22,7 @@ module.exports = function createRancherCheckScheduler(scheduler, rancherInterfac
             .then(containers => {
                 containers.forEach(container => {
                     if(container.labels && container.labels[targetLabel]) {
-                        scheduler.scheduleRancherCall(container.labels[targetLabel], container.startLink, container.name);
+                        scheduler.scheduleRancherCall(container.labels[targetLabel], container.link, container.name);
                     }
                 })
             })

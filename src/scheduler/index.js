@@ -6,7 +6,9 @@ module.exports = function(rancher) {
     };
     const makeRancherCall = (path, spec) => {
         logger.logInfo('making rancher request on spec', {path: path, cron_spec: spec})
-        rancher.makeRequest(path);
+        rancher
+            .makeRequest(`${path}/?action=stop`)
+            .then(() => rancher.makeRequest(`${path}/?action=start`));
     }
 
     const scheduleAndSave = (name, path, spec) => {
