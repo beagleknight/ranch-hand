@@ -1,14 +1,15 @@
 const nodeSchedule = require('node-schedule');
-const logger = require('../logging')
+const logger = require('../logging');
 
 module.exports = function(rancher) {
     const scheduledChecks = {
     };
     const makeRancherCall = (path, spec) => {
         logger.logInfo('making rancher request on spec', {path: path, cron_spec: spec})
-        rancher
-            .makeRequest(`${path}/?action=stop`)
-            .then(() => rancher.makeRequest(`${path}/?action=start`));
+        rancher.makeRequest(`${path}/?action=stop`)
+            .then(() => logger.logInfo('Stopped', {path: path}))
+            .then(() => rancher.makeRequest(`${path}/?action=start`))
+            .then(() => logger.logInfo('Started', {path: path}));
     }
 
     const scheduleAndSave = (name, path, spec) => {
