@@ -31,7 +31,7 @@ describe('Given all scheduled jobs happen immediately', () => {
         it('should ask rancher to start a container', () => {
             return fakeRancher.start()
                 .then(() => server.start())
-                .then(() => waitToEqual(() => fakeRancher.urls(), 50, ['/v1/projects/1a16/containers/1i4174/?action=stop', '/v1/projects/1a16/containers/1i4174/?action=start']))
+                .then(() => waitToEqual(() => fakeRancher.urls(), 50, ['/v1/projects/1a16/containers/1i4174/?action=restart']))
         });
         afterEach(() => {
             fakeRancher.stop();

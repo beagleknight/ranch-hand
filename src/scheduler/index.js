@@ -6,7 +6,7 @@ module.exports = function(rancher) {
     };
     const makeRancherCall = (path, spec) => {
         logger.logInfo('making rancher request on spec', {path: path, cron_spec: spec})
-        let url = `${path}/?action=restart`;
+        const url = `${path}/?action=restart`;
         rancher.makeRequest(url)
             .then(() => logger.logInfo('Restarted', {url: url}))
             .catch(err => logger.logError('Encountered error running scheduled start', {error_message: err.message, last_request_url:url, error_status: err.status}));
