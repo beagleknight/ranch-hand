@@ -15,7 +15,7 @@ module.exports = function createRancherCheckScheduler(scheduler, rancherInterfac
         const containerUrl = `${config.protocol}://${config.host}:${config.port}${config.containerPath}`;
         const targetLabel = 'cron_schedule';
         logger.logInfo(`Checking and scheduling containers with label set`, {path: containerUrl, label:targetLabel})
-        rancherInterface.makeRequest(containerUrl)
+        rancherInterface.makeRequest(containerUrl 'GET')
             .catch(err => logger.logError(`Error from Rancher`, {stack: err.stack}))
             .then(responseBody => JSON.parse(responseBody))
             .then(mapContainers)
