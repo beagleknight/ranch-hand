@@ -10,12 +10,15 @@ module.exports = function createRancherInterface(config) {
             }
         }, (err, res, body) => {
             if(err) {
-                reject(err);
+                return reject(err);
+            }
+            if(!res) {
+                return reject(new Error('No response from Rancher'));
             }
             if(!/2[0-9]{2}/.exec(res.statusCode)) {
                 const err = new Error('Non 200 status code from Rancher');
                 err.status = res.statusCode;
-                reject(err);
+                return reject(err);
             }
             resolve(body);
         });
