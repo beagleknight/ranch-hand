@@ -1,13 +1,16 @@
 const request = require('request');
+const logging = require('./logging');
 
 module.exports = function createRancherInterface(config) {
     const makeHttpRequest = url => new Promise((resolve, reject) => {
+        logging.logInfo('Making Rancher request', {url: url});
         request.get({
             url: url,
             headers: {
                 Accept:'application/json',
                 Authorization: config.auth
-            }
+            },
+
         }, (err, res, body) => {
             if(err) {
                 return reject(err);
