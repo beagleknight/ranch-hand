@@ -5,7 +5,7 @@ module.exports = function createRancherInterface(config) {
     const makeHttpRequest = url => new Promise((resolve, reject) => {
         logging.logInfo('Making Rancher request', {url: url});
         request.get({
-            url: url,
+            uri: url,
             headers: {
                 Accept:'application/json',
                 Authorization: config.auth
