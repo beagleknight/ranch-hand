@@ -4,10 +4,8 @@ describe('Talking to Rancher', () => {
     describe('Error handler', () => {
         it('should throw an error when a non 200 response code is returned', () => {
             const rancherInterface = proxyquire('../src/rancher.js', {
-                'request': {
-                    get: function get(options, callback) {
-                        callback(null, {statusCode:500});
-                    }
+                'request':  function get(options, callback) {
+                    callback(null, {statusCode:500});
                 }
             })({});
 
@@ -17,10 +15,8 @@ describe('Talking to Rancher', () => {
 
         it('should reject with an error when one is returned', () => {
             const rancherInterface = proxyquire('../src/rancher.js', {
-                'request': {
-                    get: function get(options, callback) {
-                        callback(new Error('boogety boo'));
-                    }
+                'request': function get(options, callback) {
+                    callback(new Error('boogety boo'));
                 }
             })({});
 
@@ -30,10 +26,8 @@ describe('Talking to Rancher', () => {
     });
     it('should send the response body back', () => {
         const rancherInterface = proxyquire('../src/rancher.js', {
-            'request': {
-                get: function get(options, callback) {
-                    callback(null, {statusCode:200}, {foo: 'bar'});
-                }
+            'request': function get(options, callback) {
+                callback(null, {statusCode:200}, {foo: 'bar'});
             }
         })({});
 
