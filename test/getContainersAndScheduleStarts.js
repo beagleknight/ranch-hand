@@ -2,6 +2,7 @@
 require('should');
 const proxyquire =  require('proxyquire');
 const config = {
+    "protocol": "http",
     "host":"localhost",
     "port":1234,
     "checkInterval": 1000,
