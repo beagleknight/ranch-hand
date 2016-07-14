@@ -1,9 +1,12 @@
 'use strict'
 const http = require('http');
 
-module.exports = function createFakeRancher() {
+module.exports = function createFakeRancher(responses) {
     let urls = [];
     let server = {close:() => {}};
+    if(!responses || !responses.length) {
+        responses = ['containers']
+    }
     const handleRequest = (req, res) => {
         if(req.url === '/containers') {
             res.write(JSON.stringify(require('./responses/containers')));

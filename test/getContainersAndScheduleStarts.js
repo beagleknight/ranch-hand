@@ -23,14 +23,14 @@ describe('Given all scheduled jobs happen immediately', () => {
             scheduleJob: (name, spec, job) => job()
         }
     });
-    const server = proxyquire('../src/server', {
+    const ranchHand = proxyquire('../src/ranchHand', {
         './scheduler': scheduler
     })(config);
 
     describe('when starting some containers', () => {
         it('should ask rancher to start a container', () => {
             return fakeRancher.start()
-                .then(() => server.start())
+                .then(() => ranchHand.start())
                 .then(() => waitToEqual(() => fakeRancher.urls(), 50, ['/v1/projects/1a16/containers/1i4174/?action=restart']))
         });
         afterEach(() => {
