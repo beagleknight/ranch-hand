@@ -12,7 +12,7 @@ const mapContainers = parsed => parsed.data.map(container => {
 
 module.exports = function createRancherCheckScheduler(scheduler, rancherInterface, config) {
     const getAllContainers = () => {
-        const containerUrl = `${config.protocol}://${config.host}:${config.port}${config.containerPath}`;
+        const containerUrl = `${config.rancher.protocol}://${config.rancher.host}:${config.rancher.port}${config.rancher.containerPath}`;
         const targetLabel = 'cron_schedule';
         logger.logInfo(`Checking and scheduling containers with label set`, {path: containerUrl, label:targetLabel})
         rancherInterface.makeRequest(containerUrl, 'GET')

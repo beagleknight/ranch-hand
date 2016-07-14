@@ -2,13 +2,14 @@
 require('should');
 const proxyquire =  require('proxyquire');
 const config = {
-    "protocol": "http",
-    "host":"localhost",
-    "port":1234,
-    "checkInterval": 1000,
-    "containerPath":"/containers",
-    "targetLabel": "cron_spec",
-    "useSecure": false
+    "rancher": {
+        "protocol": "http",
+        "host":"localhost",
+        "port":1234,
+        "containerPath":"/containers",
+        "targetLabel": "cron_spec"
+    },
+    "checkInterval": 1000
 }
 const fakeRancher = require('./fakes/rancherServer')();
 

@@ -9,7 +9,7 @@ module.exports = function createRancherInterface(config) {
             method: method || 'GET',
             headers: {
                 Accept:'application/json',
-                Authorization: config.auth
+                Authorization: config.rancher.auth
             },
 
         }, (err, res, body) => {

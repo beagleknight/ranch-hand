@@ -7,7 +7,9 @@ describe('Talking to Rancher', () => {
                 'request':  function get(options, callback) {
                     callback(null, {statusCode:500});
                 }
-            })({});
+            })({
+                rancher: {}
+            });
 
             return rancherInterface.makeRequest()
                 .catch(e => e.message.should.equal('Non 200 status code from Rancher'))
@@ -18,7 +20,9 @@ describe('Talking to Rancher', () => {
                 'request': function get(options, callback) {
                     callback(new Error('boogety boo'));
                 }
-            })({});
+            })({
+                rancher: {}
+            });
 
             return rancherInterface.makeRequest()
                 .catch(e => e.message.should.equal('boogety boo'));
@@ -29,7 +33,9 @@ describe('Talking to Rancher', () => {
             'request': function get(options, callback) {
                 callback(null, {statusCode:200}, {foo: 'bar'});
             }
-        })({});
+        })({
+            rancher: {}
+        });
 
         return rancherInterface.makeRequest()
             .then(body => body.should.deepEqual({foo: 'bar'}))
