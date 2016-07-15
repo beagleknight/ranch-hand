@@ -3,10 +3,12 @@ const logger = require('./logging');
 
 module.exports = function createServer(config, scheduler) {
     function handleRequest(req, res) {
+        logger.logInfo('handling request', {url: req.url});
         if(req.url === '/'){
             return scheduler.scheduledJobs()
                 .then(mapJobs)
                 .then(jobs => {
+                    logger.logInfo('found jobs', {jobs: jobs});
                     res.write(JSON.stringify(jobs))
                     res.end();
                 })
@@ -15,7 +17,7 @@ module.exports = function createServer(config, scheduler) {
                     res.end();
                 });
         }
-        logger.logInfo('Could not find route', {url: req.url});
+        logger.logError('Could not find route', {url: req.url});
         res.end();
     }
 
