@@ -32,9 +32,6 @@ module.exports = function(rancher) {
                 scheduleAndSave(name, path, spec);
             }
         },
-        scheduledJobs: () => {
-            console.log('getting scheduled checks')
-            return new Promise(resolve => resolve(scheduledChecks))
-        }
+        scheduledJobs: () => new Promise(resolve => resolve(scheduledChecks))
     }
 }

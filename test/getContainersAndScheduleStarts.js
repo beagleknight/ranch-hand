@@ -9,6 +9,9 @@ const config = {
         "containerPath":"/containers",
         "targetLabel": "cron_spec"
     },
+    "server": {
+        "port": 1000
+    },
     "checkInterval": 1000
 }
 const fakeRancher = require('./fakes/rancherServer')();
