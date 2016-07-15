@@ -1,6 +1,7 @@
-const server = require('./ranchHand')();
+const ranchHand = require('./ranchHand')();
 const logger = require('./logging');
 
-logger.logInfo('Started Ranch-Hand')
+logger.logInfo('Starting Ranch-Hand service')
 
-server.start();
+ranchHand.start()
+    .then(logger.logInfo('Started scheduler'));
