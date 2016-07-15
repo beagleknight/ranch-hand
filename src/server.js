@@ -26,7 +26,7 @@ module.exports = function createServer(config, scheduler) {
             const scheduledCheck = jobs[key];
             return {
                 name: scheduledCheck.job.name,
-                lastRanAt: scheduledCheck.lastRanAt,
+                lastRanAt: scheduledCheck.lastRanAt || 'never',
                 spec: scheduledCheck.spec
             };
         });
