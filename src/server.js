@@ -33,7 +33,7 @@ module.exports = function createServer(config, scheduler) {
     return {
         start: () => {
             const server = http.createServer(handleRequest);
-            return new Promise(resolve => server.listen(config.server.port || 1234, () => {
+            return new Promise(resolve => server.listen(config.server.port || 5000, () => {
                 resolve();
             }));
         }

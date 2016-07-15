@@ -10,7 +10,7 @@ const config = {
         "targetLabel": "cron_spec"
     },
     "server": {
-        "port": 1000
+        "port": 5000
     },
     "checkInterval": 1000
 }
