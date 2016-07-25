@@ -1,5 +1,5 @@
 const http = require('http');
-const logger = require('./logging');
+const logger = require('../logging');
 
 module.exports = function createServer(config, scheduler) {
     function handleRequest(req, res) {
