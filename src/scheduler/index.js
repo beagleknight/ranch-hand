@@ -7,7 +7,7 @@ module.exports = function(rancher) {
     };
     const makeRancherCall = (check, path, spec) => {
         logger.logInfo('making rancher request on spec', {path: path, cron_spec: spec})
-        const url = `${path}/?action=restart`;
+        const url = `${path}/?action=start`;
         rancher.makeRequest(url, 'POST')
             .then(() => logger.logInfo('Restarted', {url: url}))
             .then(() => check.lastRanAt = moment())
