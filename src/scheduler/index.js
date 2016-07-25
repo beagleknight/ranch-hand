@@ -18,6 +18,7 @@ module.exports = function(rancher) {
         scheduledChecks[name] = {};
         scheduledChecks[name].job = nodeSchedule.scheduleJob(name, spec, makeRancherCall.bind(null, scheduledChecks[name], path, spec));
         scheduledChecks[name].spec = spec;
+        scheduledChecks[name].path = path;
         logger.logInfo('scheduled start', {cron_spec: spec, rancher_path:path, service_name:name});
     }
 
