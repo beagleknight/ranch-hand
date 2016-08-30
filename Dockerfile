@@ -5,6 +5,6 @@ ADD . /app
 RUN npm install
 ADD . /app
 
-EXPOSE 5000
+EXPOSE 80
 
 CMD node /app/.
