@@ -68,6 +68,9 @@ describe('Load configuration', () => {
             it('to 8080 if protocol is http', () => setConfigFile({ rancher: { protocol: "http" } })
                 .then(() => new Promise(resolve => resolve(config())))
                 .should.eventually.be.have.propertyByPath('rancher', 'port').eql(8080));
+
+            it('port to 443 if protocol is defaulted to https', () => (() => new Promise(resolve => resolve(config())))()
+                .should.eventually.be.have.propertyByPath('rancher', 'port').eql(443));
         });
 
         it('checkInterval to 60000 milliseconds', () => (() => new Promise(resolve => resolve(config())))()

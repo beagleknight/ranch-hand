@@ -27,6 +27,14 @@ module.exports = () => {
         return config;
     }, parsedConfig);
 
+    parsedConfig = Object.keys(defaults).reduce((config, key) => {
+        if(!_.get(parsedConfig, key)) {
+            _.set(config, key, defaults[key])
+        }
+
+        return config;
+    }, parsedConfig);
+
     if(parsedConfig.rancher && !parsedConfig.rancher.port) {
         if(parsedConfig.rancher.protocol === 'https') {
             parsedConfig.rancher.port = 443;
@@ -35,14 +43,6 @@ module.exports = () => {
             parsedConfig.rancher.port = 8080;
         }
     }
-
-    parsedConfig = Object.keys(defaults).reduce((config, key) => {
-        if(!_.get(parsedConfig, key)) {
-            _.set(config, key, defaults[key])
-        }
-
-        return config;
-    }, parsedConfig);
 
     if(parsedConfig.rancher && parsedConfig.rancher.apiToken && !parsedConfig.rancher.auth) {
         const authToken = new Buffer(`${parsedConfig.rancher.apiToken}:${parsedConfig.rancher.apiSecret}`, "utf8").toString("base64");
