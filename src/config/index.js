@@ -5,12 +5,14 @@ const environmentVariableMappings = {
     'RANCHER_PROTOCOL': 'rancher.protocol',
     'RANCHER_HOST': 'rancher.host',
     'RANCHER_APITOKEN': 'rancher.apiToken',
-    'RANCHER_APISECRET': 'rancher.apiSecret'
+    'RANCHER_APISECRET': 'rancher.apiSecret',
+    'RANCHER_ENVIRONMENTID': 'rancher.environmentId'
 };
 
 const defaults = {
     'checkInterval': 60000,
-    'rancher.targetLabel': 'cron_schedule'
+    'rancher.targetLabel': 'cron_schedule',
+    'rancher.protocol': 'https'
 };
 
 module.exports = () => {
@@ -47,7 +49,12 @@ module.exports = () => {
         parsedConfig.rancher.auth = `Basic ${authToken}`;
     }
 
-    console.log(parsedConfig);
+    if(parsedConfig.rancher.environmentId && !parsedConfig.rancher.containerPath) {
+        if(!parsedConfig.rancher) {
+            parsedConfig.rancher = {};
+        }
+        parsedConfig.rancher.containerPath = `/v1/projects/${parsedConfig.rancher.environmentId}/containers`;
+    }
 
     return parsedConfig;
 };

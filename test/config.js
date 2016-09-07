@@ -57,6 +57,9 @@ describe('Load configuration', () => {
     });
 
     describe('defaults', () => {
+        it('protocol to https', () => (() => new Promise(resolve => resolve(config())))()
+            .should.eventually.be.have.propertyByPath('rancher', 'protocol').eql('https'));
+
         describe('port', () => {
             it('to 443 if protocol is https', () => setConfigFile({ rancher: { protocol: "https" } })
                 .then(() => new Promise(resolve => resolve(config())))
@@ -81,5 +84,13 @@ describe('Load configuration', () => {
             })
             .then(() => new Promise(resolve => resolve(config())))
             .should.eventually.be.have.propertyByPath('rancher', 'auth').eql("Basic YWJjZGVmMTIzNDU6eHl6MTIz"));
+    });
+
+    describe('containerPath', () => {
+        it('set to path with projectId set', () => setEnvironmentVariables({
+                RANCHER_ENVIRONMENTID: "1a00"
+            })
+            .then(() => new Promise(resolve => resolve(config())))
+            .should.eventually.be.have.propertyByPath('rancher', 'containerPath').eql("/v1/projects/1a00/containers"));
     });
 });
