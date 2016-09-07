@@ -69,5 +69,17 @@ describe('Load configuration', () => {
 
         it('checkInterval to 60000 milliseconds', () => (() => new Promise(resolve => resolve(config())))()
             .should.eventually.be.have.property('checkInterval', 60000));
-    })
+
+        it('targetLabel to "cron_schedule"', () => (() => new Promise(resolve => resolve(config())))()
+            .should.eventually.be.have.propertyByPath('rancher', 'targetLabel').eql("cron_schedule"));
+    });
+
+    describe('auth', () => {
+        it('sets basic property when apiToken and apiSecret set', () => setEnvironmentVariables({
+                RANCHER_APITOKEN: "abcdef12345",
+                RANCHER_APISECRET: "xyz123"
+            })
+            .then(() => new Promise(resolve => resolve(config())))
+            .should.eventually.be.have.propertyByPath('rancher', 'auth').eql("Basic YWJjZGVmMTIzNDU6eHl6MTIz"));
+    });
 });

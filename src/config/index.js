@@ -3,7 +3,14 @@ const _ = require('lodash');
 
 const environmentVariableMappings = {
     'RANCHER_PROTOCOL': 'rancher.protocol',
-    'RANCHER_HOST': 'rancher.host'
+    'RANCHER_HOST': 'rancher.host',
+    'RANCHER_APITOKEN': 'rancher.apiToken',
+    'RANCHER_APISECRET': 'rancher.apiSecret'
+};
+
+const defaults = {
+    'checkInterval': 60000,
+    'rancher.targetLabel': 'cron_schedule'
 };
 
 module.exports = () => {
@@ -27,9 +34,20 @@ module.exports = () => {
         }
     }
 
-    if(!parsedConfig.checkInterval) {
-        parsedConfig.checkInterval = 60000;
+    parsedConfig = Object.keys(defaults).reduce((config, key) => {
+        if(!_.get(parsedConfig, key)) {
+            _.set(config, key, defaults[key])
+        }
+
+        return config;
+    }, parsedConfig);
+
+    if(parsedConfig.rancher && parsedConfig.rancher.apiToken && !parsedConfig.rancher.auth) {
+        const authToken = new Buffer(`${parsedConfig.rancher.apiToken}:${parsedConfig.rancher.apiSecret}`, "utf8").toString("base64");
+        parsedConfig.rancher.auth = `Basic ${authToken}`;
     }
+
+    console.log(parsedConfig);
 
     return parsedConfig;
 };
