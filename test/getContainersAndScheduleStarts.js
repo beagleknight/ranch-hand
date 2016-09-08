@@ -28,7 +28,13 @@ describe('Given all scheduled jobs happen immediately', () => {
         }
     });
     const ranchHand = proxyquire('../src/ranchHand', {
-        './scheduler': scheduler
+        './scheduler': scheduler,
+        './config': proxyquire('../src/config', {
+            fs: {
+                readFileSync: () => { return JSON.stringify(config) },
+                readFile: (file, options, cb) => { cb(null, JSON.stringify(config)) }
+            }
+        })
     })(config);
 
     describe('when starting some containers', () => {

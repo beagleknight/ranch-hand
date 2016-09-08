@@ -7,6 +7,9 @@ const config = proxyquire('../src/config', {
     'fs': {
         readFileSync: () => {
             return fileContents || '';
+        },
+        readFile: (path, options, cb) => {
+            cb(null, fileContents || '')
         }
     }
 });
@@ -42,41 +45,41 @@ describe('Load configuration', () => {
 
     describe('from a file', () => {
         it('loads config from file', () => setConfigFile({ rancher: { protocol: "https" } })
-            .then(() => new Promise(resolve => resolve(config())))
+            .then(() => config.start())
             .should.eventually.be.have.propertyByPath('rancher', 'protocol').eql('https'));
     });
 
     describe('environment variables used if config file value missing', () => {
         it('defaults protocol', () => setEnvironmentVariables({ RANCHER_PROTOCOL: "https" })
-            .then(() => new Promise(resolve => resolve(config())))
+            .then(() => config.start())
             .should.eventually.be.have.propertyByPath('rancher', 'protocol').eql('https'));
 
         it('defaults host', () => setEnvironmentVariables({ RANCHER_HOST: "rancher.example.com" })
-            .then(() => new Promise(resolve => resolve(config())))
+            .then(() => config.start())
             .should.eventually.be.have.propertyByPath('rancher', 'host').eql('rancher.example.com'));
     });
 
     describe('defaults', () => {
-        it('protocol to https', () => (() => new Promise(resolve => resolve(config())))()
+        it('protocol to https', () => (() => config.start())()
             .should.eventually.be.have.propertyByPath('rancher', 'protocol').eql('https'));
 
         describe('port', () => {
             it('to 443 if protocol is https', () => setConfigFile({ rancher: { protocol: "https" } })
-                .then(() => new Promise(resolve => resolve(config())))
+                .then(() => config.start())
                 .should.eventually.be.have.propertyByPath('rancher', 'port').eql(443));
 
             it('to 8080 if protocol is http', () => setConfigFile({ rancher: { protocol: "http" } })
-                .then(() => new Promise(resolve => resolve(config())))
+                .then(() => config.start())
                 .should.eventually.be.have.propertyByPath('rancher', 'port').eql(8080));
 
-            it('port to 443 if protocol is defaulted to https', () => (() => new Promise(resolve => resolve(config())))()
+            it('port to 443 if protocol is defaulted to https', () => (() => config.start())()
                 .should.eventually.be.have.propertyByPath('rancher', 'port').eql(443));
         });
 
-        it('checkInterval to 60000 milliseconds', () => (() => new Promise(resolve => resolve(config())))()
+        it('checkInterval to 60000 milliseconds', () => (() => config.start())()
             .should.eventually.be.have.property('checkInterval', 60000));
 
-        it('targetLabel to "cron_schedule"', () => (() => new Promise(resolve => resolve(config())))()
+        it('targetLabel to "cron_schedule"', () => (() => config.start())()
             .should.eventually.be.have.propertyByPath('rancher', 'targetLabel').eql("cron_schedule"));
     });
 
@@ -85,7 +88,7 @@ describe('Load configuration', () => {
                 RANCHER_APITOKEN: "abcdef12345",
                 RANCHER_APISECRET: "xyz123"
             })
-            .then(() => new Promise(resolve => resolve(config())))
+            .then(() => config.start())
             .should.eventually.be.have.propertyByPath('rancher', 'auth').eql("Basic YWJjZGVmMTIzNDU6eHl6MTIz"));
     });
 
@@ -93,7 +96,7 @@ describe('Load configuration', () => {
         it('set to path with projectId set', () => setEnvironmentVariables({
                 RANCHER_ENVIRONMENTID: "1a00"
             })
-            .then(() => new Promise(resolve => resolve(config())))
+            .then(() => config.start())
             .should.eventually.be.have.propertyByPath('rancher', 'containerPath').eql("/v1/projects/1a00/containers"));
     });
 });

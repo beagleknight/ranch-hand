@@ -15,26 +15,43 @@ const defaults = {
     'rancher.protocol': 'https'
 };
 
-module.exports = () => {
-    const fileContents = fs.readFileSync(`${__dirname}/config.json`, 'utf-8');
-    let parsedConfig = JSON.parse(fileContents);
+function loadFile(path) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(path, 'utf-8', (err, fileData) => {
+            if(err) {
+                return reject(err);
+            }
 
-    parsedConfig = Object.keys(environmentVariableMappings).reduce((config, key) => {
+            resolve(fileData);
+        })
+    });
+}
+
+function parseJson(fileContents) {
+    return new Promise(resolve => resolve(JSON.parse(fileContents)));
+}
+
+function setConfigFromEnvironmentVariables(parsedConfig) {
+    return Object.keys(environmentVariableMappings).reduce((config, key) => {
         if(process.env[key] && !_.get(parsedConfig, environmentVariableMappings[key])) {
             _.set(config, environmentVariableMappings[key], process.env[key])
         }
 
         return config;
     }, parsedConfig);
+}
 
-    parsedConfig = Object.keys(defaults).reduce((config, key) => {
+function setConfigFromDefaults(parsedConfig) {
+    return Object.keys(defaults).reduce((config, key) => {
         if(!_.get(parsedConfig, key)) {
             _.set(config, key, defaults[key])
         }
 
         return config;
     }, parsedConfig);
+}
 
+function setDefaultProtocol(parsedConfig) {
     if(parsedConfig.rancher && !parsedConfig.rancher.port) {
         if(parsedConfig.rancher.protocol === 'https') {
             parsedConfig.rancher.port = 443;
@@ -44,11 +61,19 @@ module.exports = () => {
         }
     }
 
+    return parsedConfig;
+}
+
+function setAuth(parsedConfig) {
     if(parsedConfig.rancher && parsedConfig.rancher.apiToken && !parsedConfig.rancher.auth) {
         const authToken = new Buffer(`${parsedConfig.rancher.apiToken}:${parsedConfig.rancher.apiSecret}`, "utf8").toString("base64");
         parsedConfig.rancher.auth = `Basic ${authToken}`;
     }
 
+    return parsedConfig;
+}
+
+function setContainerPath(parsedConfig) {
     if(parsedConfig.rancher.environmentId && !parsedConfig.rancher.containerPath) {
         if(!parsedConfig.rancher) {
             parsedConfig.rancher = {};
@@ -57,4 +82,16 @@ module.exports = () => {
     }
 
     return parsedConfig;
+}
+
+module.exports = {
+    start: () => loadFile(`${__dirname}/config.json`)
+        .then(parseJson)
+        .then(parsedConfig => new Promise(resolve => resolve([
+            setConfigFromEnvironmentVariables,
+            setConfigFromDefaults,
+            setDefaultProtocol,
+            setAuth,
+            setContainerPath
+        ].reduce((config, configMapper) => configMapper(config), parsedConfig))))
 };
